@@ -1,6 +1,10 @@
 # fs-slaping
 qbcore slaping script
 
+```My Discord```
+- [Discord](https://discord.gg/6kJ5ubDEWE)
+
+
 Just A Drag And Drop
 
 ## Screenshots
