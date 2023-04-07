@@ -52,7 +52,7 @@ AddEventHandler('fs-slaping:SyncAnimation', function(playerNetId)
     Wait(250)
     TriggerServerEvent("fs-slaping:SyncOn_Server")
     SetPedToRagdoll(GetPlayerPed(-1), 2000, 2000, 0, 0, 0, 0)
-    FSCore.Functions.Notify('You have just been slapped..', 'success')
+    QBCore.Functions.Notify('You have just been slapped..', 'success')
 end)
 
 RegisterNetEvent("fs-slaping:Notification")
@@ -86,7 +86,7 @@ CreateThread(function()
                     TriggerServerEvent("fs-slaping:SyncGiffle", GetPlayerServerId(CitoyenCible))
                 end
             else
-                FSCore.Functions.Notify('There Is Nobody Near By..', 'error')
+                QBCore.Functions.Notify('There Is Nobody Near By..', 'error')
             end
         end
     end
