@@ -1,6 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-local VolumeOfTheSlap = 0.2
+local VolumeOfTheSlap = 0.1
 
 function getPlayers()
     local playerList = {}
@@ -17,7 +17,7 @@ function getNearPlayer()
     local players = getPlayers()
     local closestDistance = -1
     local closestPlayer = -1
-    local ply = GetPlayerPed(-1)
+    local ply = PlayerPedId()
     local plyCoords = GetEntityCoords(ply, 0)
     
     for index,value in ipairs(players) do
@@ -36,7 +36,7 @@ end
 
 RegisterNetEvent('fs-slaping:SyncOn_Client')
 AddEventHandler('fs-slaping:SyncOn_Client', function(playerNetId)
-    local lCoords = GetEntityCoords(GetPlayerPed(-1))
+    local lCoords = GetEntityCoords(PlayerPedId())
     local eCoords = GetEntityCoords(GetPlayerPed(GetPlayerFromServerId(playerNetId)))
     local distIs  = Vdist(lCoords.x, lCoords.y, lCoords.z, eCoords.x, eCoords.y, eCoords.z)
     if (distIs <= 2.0001) then
@@ -51,15 +51,8 @@ RegisterNetEvent('fs-slaping:SyncAnimation')
 AddEventHandler('fs-slaping:SyncAnimation', function(playerNetId)
     Wait(250)
     TriggerServerEvent("fs-slaping:SyncOn_Server")
-    SetPedToRagdoll(GetPlayerPed(-1), 2000, 2000, 0, 0, 0, 0)
+    SetPedToRagdoll(PlayerPedId(), 2000, 2000, 0, 0, 0, 0)
     QBCore.Functions.Notify('You have just been slapped..', 'success')
-end)
-
-RegisterNetEvent("fs-slaping:Notification")
-AddEventHandler('fs-slaping:Notification', function(text)
-    SetNotificationTextEntry('STRING')
-    AddTextComponentString(text)
-    DrawNotification(true, false)
 end)
 
 function ChargementAnimation(donnees)
@@ -70,24 +63,23 @@ function ChargementAnimation(donnees)
 end
 
 CreateThread(function()
+    local player = PlayerPedId()
     while true do
-        Wait(0)
-        if IsControlPressed(1, 21) and IsControlJustPressed(1, 47) then  -- alt + G
-            local CitoyenCible, distance = getNearPlayer()
-            if (distance ~= -1 and distance < 2.0001) then
-
-                if IsPedArmed(GetPlayerPed(-1), 7) then
-                    SetCurrentPedWeapon(GetPlayerPed(-1), GetHashKey('WEAPON_UNARMED'), true)
-                end
-
-                if (DoesEntityExist(GetPlayerPed(-1)) and not IsEntityDead(GetPlayerPed(-1))) then
-                    ChargementAnimation("melee@unarmed@streamed_variations")
-                    TaskPlayAnim(GetPlayerPed(-1), "melee@unarmed@streamed_variations", "plyr_takedown_front_slap", 8.0, 1.0, 1500, 1, 0, 0, 0, 0)
-                    TriggerServerEvent("fs-slaping:SyncGiffle", GetPlayerServerId(CitoyenCible))
-                end
-            else
-                QBCore.Functions.Notify('There Is Nobody Near By..', 'error')
-            end
+      Wait(0)
+      if IsControlPressed(1, 21) and IsControlJustPressed(1, 47) then -- shift + G
+        local target, distance = getNearPlayer()
+        if distance > 0 and distance < 2 then
+          if IsPedArmed(player, 7) then
+            SetCurrentPedWeapon(player, GetHashKey('WEAPON_UNARMED'), true)
+          end
+          if not IsEntityDead(player) then
+            ChargementAnimation("melee@unarmed@streamed_variations")
+            TaskPlayAnim(player, "melee@unarmed@streamed_variations", "plyr_takedown_front_slap", 8.0, 1.0, 1500, 1, 0, 0, 0, 0)
+            TriggerServerEvent("fs-slaping:SyncGiffle", GetPlayerServerId(target))
+          end
+        else
+          QBCore.Functions.Notify('There Is Nobody Near By..', 'error')
         end
+      end
     end
-end)
+  end)
