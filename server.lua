@@ -1,7 +1,3 @@
-local TriggerClientEvent = TriggerClientEvent
-local RegisterServerEvent = RegisterServerEvent
-local AddEventHandler = AddEventHandler
-
 local SYNC_ON_SERVER = 'fs-slaping:SyncOn_Server'
 local SYNC_ON_CLIENT = 'fs-slaping:SyncOn_Client'
 local SYNC_GIFFLE = 'fs-slaping:SyncGiffle'
